@@ -1,6 +1,8 @@
 
 export default function Header() {
   return (
-    <div>Header</div>
+    <div className="p-4 flex flex-row-reverse">
+      Header
+    </div>
   )
 }
