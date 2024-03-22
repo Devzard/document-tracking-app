@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 
 import { validateRequest } from "@/lib/auth";
 import { SessionProvider } from "@/providers/sessionProvider";
@@ -15,14 +15,14 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const sessionData = await validateRequest()
+  const sessionData = await validateRequest();
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider value={sessionData}>
-          <div className="flex flex-col w-full divide-y">
-            <Header />    
+          <div className="flex w-full flex-col divide-y">
+            {sessionData.user && <Header />}
             {children}
           </div>
         </SessionProvider>
