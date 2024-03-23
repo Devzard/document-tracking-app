@@ -4,8 +4,11 @@ import { Toaster } from "@/components/ui/toaster";
 
 import { validateRequest } from "@/lib/auth";
 import { SessionProvider } from "@/providers/sessionProvider";
+import { ThemeProvider } from "@/components/theme-provider";
 
+import { sideNav } from "@/site-config";
 import Header from "@/components/Header";
+import SideNav from "@/components/SideNav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,12 +24,24 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider value={sessionData}>
-          <div className="flex w-full flex-col divide-y">
-            {sessionData.user && <Header />}
-            {children}
-          </div>
+          <ThemeProvider>
+            <div className="dark flex h-screen w-full flex-col divide-y">
+              {sessionData.user && <Header />}
+              <div className="flex h-full">
+                <div className="w-1/4 md:w-1/5 lg:w-1/6">
+                  <SideNav
+                    items={sideNav}
+                    footer={<div>&#169; Debashish Gogoi</div>}
+                  />
+                </div>
+                <div className="flex w-3/4 items-center justify-center md:w-4/5 lg:w-5/6">
+                  {children}
+                </div>
+              </div>
+            </div>
+            <Toaster />
+          </ThemeProvider>
         </SessionProvider>
-        <Toaster />
       </body>
     </html>
   );

@@ -1,36 +1,76 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String     @id
-  email     String     @unique
-  name      String
-  password  String
-  documents Document[]
-  session   Session[]
+    id            String         @id
+    email         String         @unique
+    name          String
+    password      String
+    documents     Document[]
+    session       Session[]
+    Document      Document[]     @relation(name: "uploader")
+    GroupMemebers GroupMemeber[]
+    PipelineNode  PipelineNode[]
 }
 
 model Session {
-  id        String   @id
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    id        String   @id
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Document {
-  id         Int      @id @default(autoincrement())
-  title      String
-  location   String
-  uploader   User     @relation(fields: [uploaderId], references: [id])
-  uploaderId String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+    id               Int      @id @default(autoincrement())
+    title            String
+    location         String
+    uploader         User     @relation(name: "uploader", fields: [uploaderId], references: [id])
+    uploaderId       String
+    assignedToUser   User     @relation(fields: [assignedToUserId], references: [id])
+    assignedToUserId String   @default("")
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+}
+
+model Group {
+    id            String         @id @default(cuid())
+    title         String
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    GroupMemebers GroupMemeber[]
+}
+
+model GroupMemeber {
+    group   Group  @relation(fields: [groupId], references: [id])
+    groupId String
+    user    User   @relation(fields: [userId], references: [id])
+    userId  String
+
+    @@id([groupId, userId])
+}
+
+model Pipeline {
+    id           String         @id @default(cuid())
+    title        String
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    PipelineNode PipelineNode[]
+}
+
+model PipelineNode {
+    pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
+    pipelineId String
+    user       User     @relation(fields: [userId], references: [id])
+    userId     String
+    orderNo    Int
+
+    @@id([pipelineId, userId])
 }
