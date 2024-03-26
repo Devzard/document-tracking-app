@@ -14,9 +14,9 @@ model User {
     password      String
     documents     Document[]
     session       Session[]
-    Document      Document[]     @relation(name: "uploader")
     GroupMemebers GroupMemeber[]
     PipelineNode  PipelineNode[]
+    Pipeline      Pipeline[]
 }
 
 model Session {
@@ -29,15 +29,15 @@ model Session {
 }
 
 model Document {
-    id               Int      @id @default(autoincrement())
-    title            String
-    location         String
-    uploader         User     @relation(name: "uploader", fields: [uploaderId], references: [id])
-    uploaderId       String
-    assignedToUser   User     @relation(fields: [assignedToUserId], references: [id])
-    assignedToUserId String   @default("")
-    createdAt        DateTime @default(now())
-    updatedAt        DateTime @updatedAt
+    id         Int      @id @default(autoincrement())
+    title      String
+    location   String
+    uploader   User     @relation(fields: [uploaderId], references: [id])
+    uploaderId String
+    pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
+    pipelineId String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 }
 
 model Group {
@@ -58,11 +58,14 @@ model GroupMemeber {
 }
 
 model Pipeline {
-    id           String         @id @default(cuid())
-    title        String
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    PipelineNode PipelineNode[]
+    id              String         @id @default(cuid())
+    title           String
+    createdByUser   User           @relation(fields: [createdByUserId], references: [id])
+    createdByUserId String
+    createdAt       DateTime       @default(now())
+    updatedAt       DateTime       @updatedAt
+    PipelineNode    PipelineNode[]
+    Document        Document[]
 }
 
 model PipelineNode {

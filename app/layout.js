@@ -25,19 +25,27 @@ export default async function RootLayout({ children }) {
       <body className={inter.className}>
         <SessionProvider value={sessionData}>
           <ThemeProvider>
-            <div className="dark flex h-screen w-full flex-col divide-y">
-              {sessionData.user && <Header />}
-              <div className="flex h-full">
-                <div className="w-1/4 md:w-1/5 lg:w-1/6">
-                  <SideNav
-                    items={sideNav}
-                    footer={<div>&#169; Debashish Gogoi</div>}
-                  />
-                </div>
-                <div className="flex w-3/4 items-center justify-center md:w-4/5 lg:w-5/6">
+            <div className="flex h-screen w-full flex-col divide-y bg-background">
+              {sessionData.user ? (
+                <>
+                  <Header />
+                  <div className="flex h-full">
+                    <div className="w-1/4 md:w-1/5 lg:w-1/6">
+                      <SideNav
+                        items={sideNav}
+                        footer={<div>&#169; Debashish Gogoi</div>}
+                      />
+                    </div>
+                    <div className="flex w-3/4 items-center justify-center md:w-4/5 lg:w-5/6">
+                      {children}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="justify-center6 flex w-full items-center">
                   {children}
                 </div>
-              </div>
+              )}
             </div>
             <Toaster />
           </ThemeProvider>
