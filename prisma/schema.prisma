@@ -71,9 +71,9 @@ model Pipeline {
 model PipelineNode {
     pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
     pipelineId String
-    user       User     @relation(fields: [userId], references: [id])
-    userId     String
+    user       User     @relation(fields: [userEmail], references: [email])
+    userEmail  String
     orderNo    Int
 
-    @@id([pipelineId, userId])
+    @@id([pipelineId, userEmail])
 }

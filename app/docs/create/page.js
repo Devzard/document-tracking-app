@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,10 +30,42 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+
+import PipelineForm from "@/components/PipelineForm";
+
+import { getPipelines } from "@/actions/pipeline.action";
 
 export default function CreateDoc() {
-  const [pipelines, setPipelines] = useState(["pipeline1", "pipeline2"]);
-  const [selectedPipeline, setSelectedPipeline] = useState(pipelines[0]);
+  const { toast } = useToast();
+  const [pipelines, setPipelines] = useState([]);
+  const [selectedPipeline, setSelectedPipeline] = useState();
+  const [pipelineOpen, setPipelineOpen] = useState(false);
+
+  const updatePipelines = async () => {
+    try {
+      const res = await getPipelines();
+      if (res.success) {
+        setPipelines(res.data);
+      } else if (res.error) {
+        toast({
+          variant: "destructive",
+          description: res.error,
+        });
+      }
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        description: "Failed to fetch pipelines information.",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!pipelineOpen) {
+      updatePipelines();
+    }
+  }, [pipelineOpen]);
 
   return (
     <div className="h-full w-auto min-w-96 space-y-4 px-4 py-2 text-foreground">
@@ -47,53 +79,58 @@ export default function CreateDoc() {
         <CardContent className="space-y-4">
           <div className="">
             <Label htmlFor="title">Document Title</Label>
-            <Input type="text" id="title" placeholder="Type here ..." />
+            <Input type="text" id="title" placeholder="Type here..." />
           </div>
 
           <div className="">
             <Label htmlFor="location">Document Location</Label>
-            <Input type="text" id="location" placeholder="Type here ..." />
+            <Input type="text" id="location" placeholder="Type here..." />
           </div>
 
           {/* Select Pipeline Section */}
           {/* TODO: Change to combobox compoenent */}
-          <div className="flex space-x-4">
-            <Select
-              id="pipeline"
-              value={selectedPipeline}
-              onValueChange={setSelectedPipeline}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a pipeline" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Pipelines</SelectLabel>
-                  {pipelines.map((item, idx) => {
-                    return (
-                      <SelectItem key={idx} value={item}>
-                        {item}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col space-y-1">
+            <Label htmlFor="pipeline">Pipeline</Label>
+            <div className="flex space-x-4">
+              <Select
+                id="pipeline"
+                value={selectedPipeline}
+                onValueChange={setSelectedPipeline}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a pipeline" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Pipelines</SelectLabel>
+                    {pipelines.map((item) => {
+                      return (
+                        <SelectItem
+                          key={item.id}
+                          value={item.title}
+                          onClick={(e) => console.log(e)}
+                        >
+                          {item.title}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
 
-            {/* Create new pipeline section */}
-            <Sheet>
-              <SheetTrigger>Create new Pipeline</SheetTrigger>
-              <SheetContent>
-                {/* TODO: Create Add Pipeline Form */}
-                <SheetHeader>
-                  <SheetTitle>Are you absolutely sure?</SheetTitle>
-                  <SheetDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
-                  </SheetDescription>
-                </SheetHeader>
-              </SheetContent>
-            </Sheet>
+              {/* Create new pipeline section */}
+              <Sheet open={pipelineOpen} onOpenChange={setPipelineOpen}>
+                <SheetTrigger>Create new Pipeline</SheetTrigger>
+                <SheetContent>
+                  {/* TODO: Create Add Pipeline Form */}
+                  <SheetHeader>
+                    <SheetTitle>Create a new Pipeline</SheetTitle>
+                    <SheetDescription></SheetDescription>
+                  </SheetHeader>
+                  <PipelineForm setOpen={setPipelineOpen} />
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
 
           {/* Submit Button */}
