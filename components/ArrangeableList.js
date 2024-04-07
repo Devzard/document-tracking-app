@@ -130,47 +130,46 @@ export default function ArrangeableList({
       </Popover>
 
       {/* View Nodes Section */}
-      <div className="text-xl">Nodes</div>
+      <div className="text-md">Nodes</div>
       <div className="space-y-2 divide-y-2">
-        {nodes.length > 0
-          ? nodes.map((item, idx) => {
-              return (
-                <div key={item} className="flex h-full justify-between px-2">
-                  <div className="h-full">
-                    <div className="flex items-center space-x-2 text-primary">
-                      <div className="text-sm text-primary opacity-50">
-                        {idx + 1}
-                      </div>
-                      <div>
-                        {
-                          values.filter((value) => value.email === item)[0]
-                            ?.name
-                        }
-                      </div>
+        {nodes.length > 0 ? (
+          nodes.map((item, idx) => {
+            return (
+              <div key={item} className="flex h-full justify-between px-2">
+                <div className="h-full">
+                  <div className="flex items-center space-x-2 text-primary">
+                    <div className="text-sm text-primary opacity-50">
+                      {idx + 1}
                     </div>
-                    <div className="pl-4 text-sm text-primary opacity-50">
-                      {item}
+                    <div>
+                      {values.filter((value) => value.email === item)[0]?.name}
                     </div>
                   </div>
-                  <div className="flex min-h-full items-center space-x-2">
-                    <button onClick={() => onClickMoveHandler("up", idx)}>
-                      <ChevronUp strokeWidth={2} />
-                    </button>
-                    <button onClick={() => onClickMoveHandler("down", idx)}>
-                      <ChevronDown strokeWidth={2} />
-                    </button>
-                    <button onClick={() => onDeleteNodeHandler(idx)}>
-                      <Trash2
-                        strokeWidth={1}
-                        size={20}
-                        className="text-red-600"
-                      />
-                    </button>
+                  <div className="pl-4 text-sm text-primary opacity-50">
+                    {item}
                   </div>
                 </div>
-              );
-            })
-          : "No nodes added"}
+                <div className="flex min-h-full items-center space-x-2">
+                  <button onClick={() => onClickMoveHandler("up", idx)}>
+                    <ChevronUp strokeWidth={2} />
+                  </button>
+                  <button onClick={() => onClickMoveHandler("down", idx)}>
+                    <ChevronDown strokeWidth={2} />
+                  </button>
+                  <button onClick={() => onDeleteNodeHandler(idx)}>
+                    <Trash2
+                      strokeWidth={1}
+                      size={20}
+                      className="text-red-600"
+                    />
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p className="text-sm">No nodes added</p>
+        )}
       </div>
     </div>
   );

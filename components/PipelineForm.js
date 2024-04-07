@@ -25,6 +25,8 @@ export default function PipelineForm({ setOpen }) {
     try {
       const res = await addPipeline(title, nodes, user.id);
       if (res.success) {
+        setTitle("");
+        setNodes([]);
         toast({
           description: "Pipeline added successfully!",
         });

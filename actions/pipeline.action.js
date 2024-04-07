@@ -50,3 +50,37 @@ export const getPipelines = async () => {
     return { error: e?.message };
   }
 };
+
+export const getPipelinesForUser = async (userId) => {
+  try {
+    const res = await prisma.pipeline.findMany({
+      where: {
+        PipelineNode: {
+          some: {
+            user: {
+              is: {
+                id: userId,
+              },
+            },
+          },
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        createdByUser: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+        createdAt: true,
+      },
+    });
+
+    return { success: true, data: res };
+  } catch (e) {
+    console.log(e);
+    return { error: e?.message };
+  }
+};

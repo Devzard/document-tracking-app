@@ -1,3 +1,3 @@
 export default function PipelineLayout({ children }) {
-  return <div>{children}</div>;
+  return <div className="h-full p-2">{children}</div>;
 }
