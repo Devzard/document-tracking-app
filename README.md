@@ -2,6 +2,10 @@
 An application design to track document in an office/organisation.
 
 ## Demo
+
+https://github.com/Devzard/document-tracking-app/assets/52529195/1a800754-1036-42e5-adac-b5f48c43874d
+
+
 ![app-screenshot-1](public/light:dark.png)
 ![app-screenshot-2](public/demo-5.png)
 ![app-screenshot-3](public/demo-1.png)
