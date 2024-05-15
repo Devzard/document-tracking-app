@@ -24,18 +24,33 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider value={sessionData}>
-          <ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <div className="flex h-screen w-full flex-col divide-y bg-background">
               {sessionData.user ? (
                 <>
                   <div className="h-[7%]">
-                    <Header />
+                    <Header sessionData={sessionData} />
                   </div>
                   <div className="flex h-[93%]">
                     <div className="w-1/4 md:w-1/5 lg:w-1/6">
                       <SideNav
                         items={sideNav}
-                        footer={<div>&#169; Debashish Gogoi</div>}
+                        footer={
+                          <div>
+                            &#169;{" "}
+                            <a
+                              target="_blank"
+                              href="https://www.linkedin.com/in/debashish-gogoi-devzard/"
+                            >
+                              Debashish Gogoi
+                            </a>
+                          </div>
+                        }
                       />
                     </div>
                     <div className="overflow-y-scroll flex w-3/4 items-center justify-center md:w-4/5 lg:w-5/6">

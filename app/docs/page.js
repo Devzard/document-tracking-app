@@ -12,12 +12,44 @@ import { useSession } from "@/providers/sessionProvider";
 
 import { getDocumentsCreatedByUser } from "@/actions/docs.action";
 import { getPipelinesForUser } from "@/actions/pipeline.action";
+import { getUser } from "@/actions/user.action";
 
 export default function Docs() {
   const { toast } = useToast();
   const { user } = useSession();
   const [userDocs, setUserDocs] = useState([]);
   const [userPipelines, setUserPipelines] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+
+  const setUpdateDoc = (id, data) => {
+    // Lets update of a single item in doc list
+    setUserDocs((p) => {
+      let newP = [...p];
+      let oldObj = newP.find((item) => item.id === id);
+      let index = newP.indexOf(oldObj);
+      newP[index] = data;
+      return newP;
+    });
+  };
+
+  const loadUser = async () => {
+    try {
+      const res = await getUser(user.id);
+      if (res.success) {
+        setUserDetails(res.data);
+      } else if (res.error) {
+        toast({
+          variant: "destructive",
+          description: error,
+        });
+      }
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        description: "Couldn't fetch user details",
+      });
+    }
+  };
 
   const loadMyDocs = async () => {
     try {
@@ -60,6 +92,7 @@ export default function Docs() {
   useEffect(() => {
     loadMyDocs();
     loadPipelines();
+    loadUser();
   }, []);
 
   return (
@@ -70,7 +103,14 @@ export default function Docs() {
         <ScrollArea>
           <div className="flex space-x-2">
             {userDocs.map((item) => {
-              return <DocCard key={item.id} data={item} />;
+              return (
+                <DocCard
+                  key={item.id}
+                  data={item}
+                  updateData={setUpdateDoc}
+                  user={userDetails}
+                />
+              );
             })}
           </div>
           <ScrollBar orientation="horizontal" />

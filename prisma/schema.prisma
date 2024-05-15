@@ -1,81 +1,83 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id            String         @id
-    email         String         @unique
-    name          String
-    password      String
-    documents     Document[]
-    session       Session[]
-    GroupMemebers GroupMemeber[]
-    PipelineNode  PipelineNode[]
-    Pipeline      Pipeline[]
+  id            String         @id
+  email         String         @unique
+  name          String
+  password      String
+  documents     Document[]
+  session       Session[]
+  GroupMemebers GroupMemeber[]
+  PipelineNode  PipelineNode[]
+  Pipeline      Pipeline[]
 }
 
 model Session {
-    id        String   @id
-    user      User     @relation(fields: [userId], references: [id])
-    userId    String
-    expiresAt DateTime
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Document {
-    id         Int      @id @default(autoincrement())
-    title      String
-    location   String
-    status     String
-    stage      Int
-    uploader   User     @relation(fields: [uploaderId], references: [id])
-    uploaderId String
-    pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
-    pipelineId String
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String
+  location    String
+  status      String
+  stage       Int
+  totalStages Int      @default(0)
+  uploader    User     @relation(fields: [uploaderId], references: [id])
+  uploaderId  String
+  pipeline    Pipeline @relation(fields: [pipelineId], references: [id])
+  pipelineId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Group {
-    id            String         @id @default(cuid())
-    title         String
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @updatedAt
-    GroupMemebers GroupMemeber[]
+  id            String         @id @default(cuid())
+  title         String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  GroupMemebers GroupMemeber[]
 }
 
 model GroupMemeber {
-    group   Group  @relation(fields: [groupId], references: [id])
-    groupId String
-    user    User   @relation(fields: [userId], references: [id])
-    userId  String
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
 
-    @@id([groupId, userId])
+  @@id([groupId, userId])
 }
 
 model Pipeline {
-    id              String         @id @default(cuid())
-    title           String
-    createdByUser   User           @relation(fields: [createdByUserId], references: [id])
-    createdByUserId String
-    createdAt       DateTime       @default(now())
-    updatedAt       DateTime       @updatedAt
-    PipelineNode    PipelineNode[]
-    Document        Document[]
+  id              String         @id @default(cuid())
+  title           String
+  createdByUser   User           @relation(fields: [createdByUserId], references: [id])
+  createdByUserId String
+  pipelineLength  Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  PipelineNode    PipelineNode[]
+  Document        Document[]
 }
 
 model PipelineNode {
-    pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
-    pipelineId String
-    user       User     @relation(fields: [userEmail], references: [email])
-    userEmail  String
-    orderNo    Int
+  pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
+  pipelineId String
+  user       User     @relation(fields: [userEmail], references: [email])
+  userEmail  String
+  orderNo    Int
 
-    @@id([pipelineId, userEmail])
+  @@id([pipelineId, userEmail])
 }

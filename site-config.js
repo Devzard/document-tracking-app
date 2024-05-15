@@ -25,9 +25,4 @@ export const sideNav = [
       <UserRoundPlus size={sideNavIconSize} strokeWidth={sideNavStrokeWidth} />
     ),
   },
-  {
-    name: "My Pipeline",
-    path: "/pipeline",
-    icon: <Workflow size={sideNavIconSize} strokeWidth={sideNavStrokeWidth} />,
-  },
 ];

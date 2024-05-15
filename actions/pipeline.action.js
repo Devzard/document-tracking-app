@@ -16,6 +16,7 @@ export const addPipeline = async (title, nodes, createdBy) => {
             id: createdBy,
           },
         },
+        pipelineLength: pipelineNodes.length,
         PipelineNode: {
           create: pipelineNodes,
         },
@@ -26,6 +27,65 @@ export const addPipeline = async (title, nodes, createdBy) => {
   } catch (e) {
     console.log(e);
     return { error: e?.message };
+  }
+};
+
+export const getPipelineNodeByOrderNo = async (pipelineId, userEmail) => {
+  try {
+    const res = await prisma.PipelineNode.findUnique({
+      where: {
+        pipelineId_userEmail: {
+          pipelineId: pipelineId,
+          userEmail: userEmail,
+        },
+      },
+      select: {
+        orderNo: true,
+        user: true,
+      },
+    });
+
+    return { success: true, data: res };
+  } catch (err) {
+    console.log(err);
+    return { error: err?.message };
+  }
+};
+
+export const getPipeLineWithNodeDetails = async (pipelineId) => {
+  try {
+    const res = await prisma.pipeline.findUnique({
+      where: {
+        id: pipelineId,
+      },
+      select: {
+        title: true,
+        PipelineNode: true,
+      },
+    });
+
+    return { success: true, data: res };
+  } catch (err) {
+    console.log(err);
+    return { error: err?.message };
+  }
+};
+
+export const getPipelineLength = async (id) => {
+  try {
+    const res = await prisma.pipeline.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        pipelineLength: true,
+      },
+    });
+
+    return { success: true, data: res.pipelineLength };
+  } catch (err) {
+    console.log(err);
+    return { error: err?.message };
   }
 };
 

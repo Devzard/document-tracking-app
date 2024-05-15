@@ -1,6 +1,13 @@
 # Document Tracking Application
 An application design to track document in an office/organisation.
 
+## Demo
+![app-screenshot-1](public/light:dark.png)
+![app-screenshot-2](public/demo-5.png)
+![app-screenshot-3](public/demo-1.png)
+![app-screenshot-4](public/demo-2.png)
+![app-screenshot-5](public/demo-3.png)
+
 ## Running Development Server
 
 ```bash
@@ -13,6 +20,12 @@ pnpm dev
 bun dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+## Technologies used
+1. Framework: Nextjs (tailwindcss, shadcnui, lucia)
+2. Database: Sqlite
+3. ORM: Prisma
 
 ## Project Organisation
 

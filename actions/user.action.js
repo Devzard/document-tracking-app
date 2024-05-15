@@ -16,3 +16,21 @@ export const getUsers = async () => {
     return err?.message;
   }
 };
+
+export const getUser = async (id) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        name: true,
+        email: true,
+      },
+    });
+
+    return { success: true, data: user };
+  } catch (err) {
+    return err?.message;
+  }
+};

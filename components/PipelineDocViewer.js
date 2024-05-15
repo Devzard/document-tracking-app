@@ -15,11 +15,43 @@ import {
 import DocCard from "@/components/DocCard";
 
 import { getDocumentsFromPipeline } from "@/actions/docs.action";
+import { getUser } from "@/actions/user.action";
 
 export default function PipelineDocViewer({ data }) {
   const { toast } = useToast();
   const { user } = useSession();
   const [docs, setDocs] = useState([]);
+  const [userDetails, setUserDetails] = useState(null);
+
+  const setUpdateDoc = (id, data) => {
+    // Lets update of a single item in doc list
+    setDocs((p) => {
+      let newP = [...p];
+      let oldObj = newP.find((item) => item.id === id);
+      let index = newP.indexOf(oldObj);
+      newP[index] = data;
+      return newP;
+    });
+  };
+
+  const loadUser = async () => {
+    try {
+      const res = await getUser(user.id);
+      if (res.success) {
+        setUserDetails(res.data);
+      } else if (res.error) {
+        toast({
+          variant: "destructive",
+          description: error,
+        });
+      }
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        description: "Couldn't fetch user details",
+      });
+    }
+  };
 
   async function getDocs() {
     try {
@@ -42,6 +74,7 @@ export default function PipelineDocViewer({ data }) {
 
   useEffect(() => {
     getDocs();
+    loadUser();
   }, []);
 
   return (
@@ -60,7 +93,14 @@ export default function PipelineDocViewer({ data }) {
               <ScrollArea>
                 <div className="flex space-x-2">
                   {docs.map((item) => {
-                    return <DocCard key={item.id} data={item} />;
+                    return (
+                      <DocCard
+                        key={item.id}
+                        data={item}
+                        user={userDetails}
+                        updateData={setUpdateDoc}
+                      />
+                    );
                   })}
                 </div>
                 <ScrollBar orientation="horizontal" />
